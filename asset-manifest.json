@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "https://chizz3x.space/vtx-conflict-map/static/css/main.c9fcf16e.css",
-    "main.js": "https://chizz3x.space/vtx-conflict-map/static/js/main.c51ddda3.js",
-    "static/js/38.57243671.chunk.js": "https://chizz3x.space/vtx-conflict-map/static/js/38.57243671.chunk.js",
-    "index.html": "https://chizz3x.space/vtx-conflict-map/index.html",
-    "main.c9fcf16e.css.map": "https://chizz3x.space/vtx-conflict-map/static/css/main.c9fcf16e.css.map",
-    "main.c51ddda3.js.map": "https://chizz3x.space/vtx-conflict-map/static/js/main.c51ddda3.js.map",
-    "38.57243671.chunk.js.map": "https://chizz3x.space/vtx-conflict-map/static/js/38.57243671.chunk.js.map"
+    "main.css": "https://vtx.chizz3x.space/static/css/main.c9fcf16e.css",
+    "main.js": "https://vtx.chizz3x.space/static/js/main.4ad9a3c0.js",
+    "static/js/38.57243671.chunk.js": "https://vtx.chizz3x.space/static/js/38.57243671.chunk.js",
+    "index.html": "https://vtx.chizz3x.space/index.html",
+    "main.c9fcf16e.css.map": "https://vtx.chizz3x.space/static/css/main.c9fcf16e.css.map",
+    "main.4ad9a3c0.js.map": "https://vtx.chizz3x.space/static/js/main.4ad9a3c0.js.map",
+    "38.57243671.chunk.js.map": "https://vtx.chizz3x.space/static/js/38.57243671.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c9fcf16e.css",
-    "static/js/main.c51ddda3.js"
+    "static/js/main.4ad9a3c0.js"
   ]
 }
