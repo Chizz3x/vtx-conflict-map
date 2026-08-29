@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "https://chizz3x.github.io/vtx-conflict-map/static/css/main.c9fcf16e.css",
+    "main.js": "https://chizz3x.github.io/vtx-conflict-map/static/js/main.754a72a6.js",
+    "static/js/38.57243671.chunk.js": "https://chizz3x.github.io/vtx-conflict-map/static/js/38.57243671.chunk.js",
+    "index.html": "https://chizz3x.github.io/vtx-conflict-map/index.html",
+    "main.c9fcf16e.css.map": "https://chizz3x.github.io/vtx-conflict-map/static/css/main.c9fcf16e.css.map",
+    "main.754a72a6.js.map": "https://chizz3x.github.io/vtx-conflict-map/static/js/main.754a72a6.js.map",
+    "38.57243671.chunk.js.map": "https://chizz3x.github.io/vtx-conflict-map/static/js/38.57243671.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c9fcf16e.css",
+    "static/js/main.754a72a6.js"
+  ]
+}
