@@ -1,0 +1,49 @@
+import React from 'react';
+import styled from 'styled-components';
+
+interface ModalRootProps {
+  onClose?: () => void;
+  children?: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+const ModalRoot = (props: ModalRootProps) => {
+  const { children, onClose, style } = props;
+
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    if (event.currentTarget === event.target) {
+      onClose?.();
+    }
+  };
+
+  return (
+    <ModalRootStyle style={style} onClick={handleClick}>
+      <div className="modal-inner">{children}</div>
+    </ModalRootStyle>
+  );
+};
+
+export { ModalRoot };
+
+const ModalRootStyle = styled.div`
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+
+  .modal-inner {
+    background: #1a1a2e;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+`;
