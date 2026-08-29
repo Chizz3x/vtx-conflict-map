@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://chizz3x.github.io/vtx-conflict-map/sitemap.xml
+Sitemap: https://chizz3x.space/vtx-conflict-map/sitemap.xml
