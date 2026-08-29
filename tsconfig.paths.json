@@ -9,6 +9,7 @@
       "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],
       "@api/*": ["src/api/*"],
+      "@theme/*": ["src/theme/*"],
       "@const": ["src/const"],
       "@shared/types": ["../shared-types/src"],
       "@shared/utils": ["../shared-utils/src"]

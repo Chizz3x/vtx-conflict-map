@@ -1,6 +1,12 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 export default createGlobalStyle`
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
 	body {
 		margin: 0;
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -8,14 +14,13 @@ export default createGlobalStyle`
 			sans-serif;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
+		background-color: ${({ theme }) => theme.palette.background};
+		color: ${({ theme }) => theme.palette.text.primary};
+		transition: background-color 0.2s ease, color 0.2s ease;
 	}
 
 	code {
 		font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
 			monospace;
-	}
-
-	:root {
-		// ---
 	}
 `;

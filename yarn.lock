@@ -1855,12 +1855,6 @@
   resolved "https://registry.yarnpkg.com/@sec-ant/readable-stream/-/readable-stream-0.4.1.tgz#60de891bb126abfdc5410fdc6166aca065f10a0c"
   integrity sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==
 
-"@shared/types@file:../shared-types":
-  version "0.0.1"
-
-"@shared/utils@file:../shared-utils":
-  version "0.0.1"
-
 "@sinclair/typebox@^0.24.1":
   version "0.24.52"
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.24.52.tgz#78390a213e5b42fb570f1a59e92f96a02dfbd114"

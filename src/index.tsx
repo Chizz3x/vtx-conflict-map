@@ -9,6 +9,7 @@ import GlobalStyle from './style';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from './redux/store';
 import { AuthProvider } from './contexts/auth';
+import { AppThemeProvider } from '@theme/index';
 import i18n from './i18n';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -16,17 +17,19 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
     <ReduxProvider store={store}>
-      <GlobalStyle />
-      <I18nextProvider i18n={i18n}>
-        <Suspense fallback={null}>
-          <ToastContainer position="bottom-left" />
-          <AuthProvider>
-            <BrowserRouter>
-              <Index />
-            </BrowserRouter>
-          </AuthProvider>
-        </Suspense>
-      </I18nextProvider>
+      <AppThemeProvider>
+        <GlobalStyle />
+        <I18nextProvider i18n={i18n}>
+          <Suspense fallback={null}>
+            <ToastContainer position="bottom-left" />
+            <AuthProvider>
+              <BrowserRouter>
+                <Index />
+              </BrowserRouter>
+            </AuthProvider>
+          </Suspense>
+        </I18nextProvider>
+      </AppThemeProvider>
     </ReduxProvider>
   </React.StrictMode>,
 );
