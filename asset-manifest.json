@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "https://vtx.chizz3x.space/static/css/main.c9fcf16e.css",
-    "main.js": "https://vtx.chizz3x.space/static/js/main.c737b46e.js",
+    "main.js": "https://vtx.chizz3x.space/static/js/main.8b3170b1.js",
     "static/js/38.57243671.chunk.js": "https://vtx.chizz3x.space/static/js/38.57243671.chunk.js",
     "workbox-f09186f9.js.map": "https://vtx.chizz3x.space/workbox-f09186f9.js.map",
     "workbox-f09186f9.js": "https://vtx.chizz3x.space/workbox-f09186f9.js",
@@ -9,11 +9,11 @@
     "index.html": "https://vtx.chizz3x.space/index.html",
     "service-worker.js": "https://vtx.chizz3x.space/service-worker.js",
     "main.c9fcf16e.css.map": "https://vtx.chizz3x.space/static/css/main.c9fcf16e.css.map",
-    "main.c737b46e.js.map": "https://vtx.chizz3x.space/static/js/main.c737b46e.js.map",
+    "main.8b3170b1.js.map": "https://vtx.chizz3x.space/static/js/main.8b3170b1.js.map",
     "38.57243671.chunk.js.map": "https://vtx.chizz3x.space/static/js/38.57243671.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c9fcf16e.css",
-    "static/js/main.c737b46e.js"
+    "static/js/main.8b3170b1.js"
   ]
 }
