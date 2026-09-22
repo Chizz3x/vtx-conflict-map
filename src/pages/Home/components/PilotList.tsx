@@ -12,13 +12,19 @@ type Props = {
 };
 
 const PilotList = ({ pilots, expanded, noedit, onToggle, onRename }: Props) => {
+  const showPanel = noedit || expanded;
+
   return (
     <PilotListStyle className="pilot-list">
-      <button type="button" className="pilot-toggle" onClick={onToggle} aria-expanded={expanded}>
-        <span className={expanded ? "chevron open" : "chevron"} />
-        <span>Pilots ({pilots.length})</span>
-      </button>
-      {expanded && (
+      {noedit ? (
+        <div className="pilot-head">Pilots ({pilots.length})</div>
+      ) : (
+        <button type="button" className="pilot-toggle" onClick={onToggle} aria-expanded={expanded}>
+          <span className={expanded ? "chevron open" : "chevron"} />
+          <span>Pilots ({pilots.length})</span>
+        </button>
+      )}
+      {showPanel && (
         <div className="panel">
           {pilots.length === 0 ? (
             <span className="empty">No channels selected.</span>
@@ -76,6 +82,16 @@ const PilotListStyle = styled.div`
     &:hover {
       color: ${({ theme }) => theme.palette.primary};
     }
+  }
+
+  .pilot-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: ${({ theme }) => theme.palette.text.primary};
   }
 
   .chevron {
