@@ -92,7 +92,7 @@ const AdvancedPanel = ({
           {copied ? "Copied!" : "Copy link"}
         </button>
         <button type="button" className="action-button" onClick={onShowQr}>
-          Gen QR
+          Get QR
         </button>
       </div>
     </AdvancedPanelStyle>

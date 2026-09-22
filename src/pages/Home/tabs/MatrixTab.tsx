@@ -68,6 +68,12 @@ const MatrixTab = ({ planner }: Props) => {
           <button type="button" className="accordion-toggle" onClick={handleNew}>
             New
           </button>
+          <button type="button" className="accordion-toggle" onClick={handleCopyLink}>
+            {copied ? "Copied!" : "Copy link"}
+          </button>
+          <button type="button" className="accordion-toggle" onClick={handleShowQr}>
+            Get QR
+          </button>
         </div>
       ) : (
         <>

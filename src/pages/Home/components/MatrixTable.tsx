@@ -86,13 +86,15 @@ const MatrixTable = ({
             </tbody>
           </table>
         </div>
-        <PilotList
-          pilots={pilots}
-          expanded={expanded}
-          noedit={noedit}
-          onToggle={onTogglePilots}
-          onRename={onRename}
-        />
+        {multiSelect && (
+          <PilotList
+            pilots={pilots}
+            expanded={expanded}
+            noedit={noedit}
+            onToggle={onTogglePilots}
+            onRename={onRename}
+          />
+        )}
       </div>
     </MatrixTableStyle>
   );

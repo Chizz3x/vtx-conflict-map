@@ -49,6 +49,19 @@ const nextPilotName = (names: Record<string, string>): string => {
   return `Pilot ${n}`;
 };
 
+/** Keeps names for cells that have one, auto-assigns for the rest, drops the rest. */
+const ensureNames = (cells: CellId[], existing: Record<string, string>): Record<string, string> => {
+  const next: Record<string, string> = {};
+  cells.forEach((cell) => {
+    const code = cellToCode(cell);
+    next[code] = existing[code] ?? "";
+  });
+  Object.keys(next).forEach((code) => {
+    if (!next[code]) next[code] = nextPilotName(next);
+  });
+  return next;
+};
+
 export const useVtxPlanner = () => {
   const [tab, setTab] = useUrlState<TabKey>("tab", parseTab, serializeTab);
   const [selectedCells, setSelectedCells] = useUrlState<CellId[]>(
@@ -80,11 +93,14 @@ export const useVtxPlanner = () => {
         delete rest[code];
         return rest;
       });
-    } else {
-      const nextNames = multiSelect ? { ...names } : {};
+    } else if (multiSelect) {
+      const nextNames = { ...names };
       nextNames[code] = nextPilotName(nextNames);
-      setSelectedCells(multiSelect ? [...selectedCells, cell] : [cell]);
+      setSelectedCells([...selectedCells, cell]);
       setNames(nextNames);
+    } else {
+      setSelectedCells([cell]);
+      setNames({});
     }
   };
 
@@ -98,9 +114,11 @@ export const useVtxPlanner = () => {
   }, [multiSelect, selectedCells, noedit]);
 
   useEffect(() => {
-    if (noedit) return;
+    // Names are a multi-select concept; in single-select mode they are cleared
+    // and must not overwrite the saved multi workspace.
+    if (noedit || !multiSelect) return;
     saveNames(names);
-  }, [names, noedit]);
+  }, [names, noedit, multiSelect]);
 
   // Entry via a shared URL with multi already active: state comes from the URL
   // (useUrlState reads it on mount). Only when the URL carries multi but no
@@ -123,14 +141,17 @@ export const useVtxPlanner = () => {
       // In-page toggle: restore the saved multi workspace first; only fall
       // back to the URL when there is no saved memory (e.g. a bare share link).
       const memory = loadSavedSelection();
-      if (memory.length > 0) {
-        setSelectedCells(memory);
-        setNames(loadSavedNames());
-      } else {
-        setSelectedCells(parseSelection(readUrlParams().get("sel")));
+      const cells =
+        memory.length > 0 ? memory : parseSelection(readUrlParams().get("sel"));
+      if (cells.length > 0) {
+        // Cells carried in from single-select have no name yet; give them one
+        // so the nm param and the roster stay in sync with sel.
+        setSelectedCells(cells);
+        setNames(ensureNames(cells, memory.length > 0 ? loadSavedNames() : names));
       }
     } else {
       setSelectedCells([]);
+      setNames({});
     }
   };
 
