@@ -6,13 +6,13 @@ import { ROUTES } from '../routes';
 config();
 
 const build = () => {
-  const hostname = process.env.PUBLIC_URL || 'https://example.com';
+  const hostname = (process.env.PUBLIC_URL || 'https://example.com').replace(/\/+$/, '');
   const outPath = path.resolve('build', 'sitemap.xml');
 
-  const urls = Object.values(ROUTES).map(
-    (route) =>
-      `  <url>\n    <loc>${path.posix.join(hostname, '?', route)}</loc>\n  </url>`,
-  );
+  const urls = Object.values(ROUTES).map((route) => {
+    const clean = route === '/' ? '/' : `/${route.replace(/^\/+/, '')}`;
+    return `  <url>\n    <loc>${hostname}${clean}</loc>\n  </url>`;
+  });
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

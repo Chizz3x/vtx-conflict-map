@@ -50,6 +50,10 @@
     "react-toastify": "^11.0.5",
     "styled-components": "6.3.11",
     "typescript": "^5.9.3",
+    "workbox-core": "^7.4.1",
+    "workbox-precaching": "^7.4.1",
+    "workbox-routing": "^7.4.1",
+    "workbox-strategies": "^7.4.1",
     "yup": "^1.7.1"
   },
   "devDependencies": {
@@ -65,6 +69,7 @@
     "i18next-cli": "^1.49.4",
     "react-app-rewire-alias": "^1.1.7",
     "react-app-rewired": "^2.2.1",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "workbox-webpack-plugin": "^7.4.1"
   }
 }

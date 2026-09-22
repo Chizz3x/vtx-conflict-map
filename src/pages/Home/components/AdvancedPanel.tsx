@@ -64,7 +64,7 @@ const AdvancedPanel = ({
           </div>
         </div>
         <button type="button" className="action-button" onClick={onResetThresholds} title="Reset thresholds to defaults">
-          Reset
+          Reset thresholds
         </button>
       </div>
 

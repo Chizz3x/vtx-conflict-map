@@ -45,6 +45,31 @@ export const parseSelection = (raw: string | null): CellId[] => {
 export const serializeSelection = (cells: CellId[]): string | null =>
   cells.length > 0 ? cells.map(cellToCode).join(".") : null;
 
+export const parseNames = (raw: string | null): Record<string, string> => {
+  if (!raw) return {};
+  const names: Record<string, string> = {};
+  for (const segment of raw.split(".")) {
+    const eq = segment.indexOf("=");
+    if (eq <= 0) continue;
+    const code = segment.slice(0, eq);
+    let name: string;
+    try {
+      name = decodeURIComponent(segment.slice(eq + 1));
+    } catch {
+      continue;
+    }
+    if (name) names[code] = name;
+  }
+  return names;
+};
+
+export const serializeNames = (names: Record<string, string>): string | null => {
+  const parts = Object.keys(names)
+    .filter((code) => names[code])
+    .map((code) => `${code}=${encodeURIComponent(names[code]).replace(/\./g, "%2E")}`);
+  return parts.length > 0 ? parts.join(".") : null;
+};
+
 export const parseBool = (raw: string | null): boolean => raw === "1" || raw === "true";
 
 export const serializeBool = (value: boolean): string | null => (value ? "1" : null);

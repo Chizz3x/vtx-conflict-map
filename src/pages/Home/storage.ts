@@ -1,6 +1,7 @@
 import { VTX_BANDS, DEFAULT_HARD_MHZ, DEFAULT_MILD_MHZ, CellId } from "./vtx";
 
 export const SELECTION_STORAGE_KEY = "vtx-multi-select";
+export const NAMES_STORAGE_KEY = "vtx-pilot-names";
 export const HARD_STORAGE_KEY = "vtx-hard-mhz";
 export const MILD_STORAGE_KEY = "vtx-mild-mhz";
 
@@ -46,6 +47,38 @@ export const saveSelection = (cells: CellId[]) => {
 export const clearSavedSelection = () => {
   try {
     window.localStorage.removeItem(SELECTION_STORAGE_KEY);
+  } catch {
+    // ignore storage errors
+  }
+};
+
+export const loadSavedNames = (): Record<string, string> => {
+  try {
+    const raw = window.localStorage.getItem(NAMES_STORAGE_KEY);
+    if (!raw) return {};
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return {};
+    const result: Record<string, string> = {};
+    for (const [code, name] of Object.entries(parsed as Record<string, unknown>)) {
+      if (typeof name === "string" && name) result[code] = name;
+    }
+    return result;
+  } catch {
+    return {};
+  }
+};
+
+export const saveNames = (names: Record<string, string>) => {
+  try {
+    window.localStorage.setItem(NAMES_STORAGE_KEY, JSON.stringify(names));
+  } catch {
+    // ignore storage errors
+  }
+};
+
+export const clearSavedNames = () => {
+  try {
+    window.localStorage.removeItem(NAMES_STORAGE_KEY);
   } catch {
     // ignore storage errors
   }

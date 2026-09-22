@@ -14,6 +14,16 @@ import i18n from './i18n';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
+if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register(`${process.env.PUBLIC_URL}/service-worker.js`)
+      .catch(() => {
+        // registration failures are non-fatal; the app works online regardless
+      });
+  });
+}
+
 root.render(
   <React.StrictMode>
     <ReduxProvider store={store}>

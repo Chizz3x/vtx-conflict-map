@@ -32,53 +32,83 @@ const MatrixTab = ({ planner }: Props) => {
     counts,
     conflictingSelectedCount,
     selectedLabels,
+    noedit,
+    handleRename,
+    handleEdit,
+    handleNew,
+    expanded,
+    setExpanded,
+    pilots,
   } = planner;
 
   return (
     <MatrixTabStyle>
       <p>
-        Click any channel. Every other channel will highlight{" "}
-        <strong>red</strong> (hard conflict, under {hardMhz} MHz),{" "}
-        <strong>yellow</strong> (mild conflict, {hardMhz}-{mildMhz} MHz), or stay plain (all
-        good). Adjust the thresholds below to tune what counts as a conflict.
+        {noedit ? (
+          <>
+            Shared plan (read-only). Every channel highlights <strong>red</strong> (hard conflict,
+            under {hardMhz} MHz), <strong>yellow</strong> (mild conflict, {hardMhz}-{mildMhz} MHz),
+            or stays plain (all good).
+          </>
+        ) : (
+          <>
+            Click any channel. Every other channel will highlight <strong>red</strong> (hard
+            conflict, under {hardMhz} MHz), <strong>yellow</strong> (mild conflict, {hardMhz}-
+            {mildMhz} MHz), or stay plain (all good). Adjust the thresholds below to tune what
+            counts as a conflict.
+          </>
+        )}
       </p>
 
-      <div className="controls">
-        <label>
-          <input
-            type="checkbox"
-            className="checkbox"
-            checked={multiSelect}
-            onChange={(e) => handleMultiSelectChange(e.target.checked)}
-          />
-          Multi-select
-        </label>
-        <button
-          type="button"
-          className="accordion-toggle"
-          onClick={() => setShowAdvanced((v) => !v)}
-          aria-expanded={showAdvanced}
-        >
-          <span className={showAdvanced ? "chevron open" : "chevron"} />
-          Advanced
-        </button>
-      </div>
+      {noedit ? (
+        <div className="controls">
+          <button type="button" className="accordion-toggle" onClick={handleEdit}>
+            Edit this plan
+          </button>
+          <button type="button" className="accordion-toggle" onClick={handleNew}>
+            New
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="controls">
+            <label>
+              <input
+                type="checkbox"
+                className="checkbox"
+                checked={multiSelect}
+                onChange={(e) => handleMultiSelectChange(e.target.checked)}
+              />
+              Multi-select
+            </label>
+            <button
+              type="button"
+              className="accordion-toggle"
+              onClick={() => setShowAdvanced((v) => !v)}
+              aria-expanded={showAdvanced}
+            >
+              <span className={showAdvanced ? "chevron open" : "chevron"} />
+              Advanced
+            </button>
+          </div>
 
-      {showAdvanced && (
-        <AdvancedPanel
-          hardMhz={hardMhz}
-          mildMhz={mildMhz}
-          onHardChange={handleHardChange}
-          onMildChange={handleMildChange}
-          onResetThresholds={handleResetThresholds}
-          pilotCount={pilotCount}
-          onPilotCountChange={setPilotCount}
-          onSuggest={handleSuggest}
-          onClear={handleClear}
-          onCopy={handleCopyLink}
-          onShowQr={handleShowQr}
-          copied={copied}
-        />
+          {showAdvanced && (
+            <AdvancedPanel
+              hardMhz={hardMhz}
+              mildMhz={mildMhz}
+              onHardChange={handleHardChange}
+              onMildChange={handleMildChange}
+              onResetThresholds={handleResetThresholds}
+              pilotCount={pilotCount}
+              onPilotCountChange={setPilotCount}
+              onSuggest={handleSuggest}
+              onClear={handleClear}
+              onCopy={handleCopyLink}
+              onShowQr={handleShowQr}
+              copied={copied}
+            />
+          )}
+        </>
       )}
 
       <div className="status">
@@ -105,6 +135,11 @@ const MatrixTab = ({ planner }: Props) => {
         hardMhz={hardMhz}
         mildMhz={mildMhz}
         onToggleCell={toggleCell}
+        pilots={pilots}
+        expanded={expanded}
+        noedit={noedit}
+        onTogglePilots={() => setExpanded((v) => !v)}
+        onRename={handleRename}
       />
 
       <Legend hardMhz={hardMhz} mildMhz={mildMhz} />

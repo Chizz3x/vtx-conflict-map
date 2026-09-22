@@ -6,6 +6,7 @@ import {
   Conflict,
   DEFAULT_HARD_MHZ,
   DEFAULT_MILD_MHZ,
+  cellToCode,
   conflictWithOtherSelections,
   conflictWithSelections,
   freqOf,
@@ -15,18 +16,23 @@ import {
 import {
   HARD_STORAGE_KEY,
   MILD_STORAGE_KEY,
+  clearSavedNames,
   clearSavedSelection,
+  loadSavedNames,
   loadSavedSelection,
+  saveNames,
   saveSelection,
   saveThreshold,
 } from "./storage";
 import {
   readUrlParams,
   parseBool,
+  parseNames,
   parseSelection,
   parseTab,
   parseThresholds,
   serializeBool,
+  serializeNames,
   serializeSelection,
   serializeTab,
   serializeThresholds,
@@ -35,6 +41,13 @@ import {
 import { copyToClipboard } from "@utils/copy-to-clipboard";
 import { useDispatch } from "@redux/hooks";
 import { openModal } from "@redux/slices/modals";
+
+const nextPilotName = (names: Record<string, string>): string => {
+  const used = new Set(Object.values(names).filter((n) => /^Pilot \d+$/.test(n)));
+  let n = 1;
+  while (used.has(`Pilot ${n}`)) n += 1;
+  return `Pilot ${n}`;
+};
 
 export const useVtxPlanner = () => {
   const [tab, setTab] = useUrlState<TabKey>("tab", parseTab, serializeTab);
@@ -49,31 +62,57 @@ export const useVtxPlanner = () => {
     parseThresholds,
     serializeThresholds,
   );
+  const [names, setNames] = useUrlState<Record<string, string>>("nm", parseNames, serializeNames);
+  const [noedit, setNoedit] = useUrlState<boolean>("noedit", parseBool, serializeBool);
 
   const hardMhz = thresholds.hard;
   const mildMhz = thresholds.mild;
 
   const toggleCell = (cell: CellId) => {
-    setSelectedCells((prev) => {
-      const exists = prev.some((s) => s.band === cell.band && s.channel === cell.channel);
-      if (exists) {
-        return prev.filter((s) => !(s.band === cell.band && s.channel === cell.channel));
-      }
-      return multiSelect ? [...prev, cell] : [cell];
-    });
+    if (noedit) return;
+    const code = cellToCode(cell);
+    if (isCellSelected(selectedCells, cell)) {
+      setSelectedCells(
+        selectedCells.filter((s) => !(s.band === cell.band && s.channel === cell.channel)),
+      );
+      setNames((prevNames) => {
+        const rest = { ...prevNames };
+        delete rest[code];
+        return rest;
+      });
+    } else {
+      const nextNames = multiSelect ? { ...names } : {};
+      nextNames[code] = nextPilotName(nextNames);
+      setSelectedCells(multiSelect ? [...selectedCells, cell] : [cell]);
+      setNames(nextNames);
+    }
+  };
+
+  const handleRename = (code: string, name: string) => {
+    setNames((prev) => ({ ...prev, [code]: name }));
   };
 
   useEffect(() => {
+    if (noedit) return;
     if (multiSelect) saveSelection(selectedCells);
-  }, [multiSelect, selectedCells]);
+  }, [multiSelect, selectedCells, noedit]);
+
+  useEffect(() => {
+    if (noedit) return;
+    saveNames(names);
+  }, [names, noedit]);
 
   // Entry via a shared URL with multi already active: state comes from the URL
   // (useUrlState reads it on mount). Only when the URL carries multi but no
   // selection do we fill the gap from saved memory.
   useEffect(() => {
+    if (noedit) return;
     if (multiSelect && selectedCells.length === 0) {
       const memory = loadSavedSelection();
-      if (memory.length > 0) setSelectedCells(memory);
+      if (memory.length > 0) {
+        setSelectedCells(memory);
+        setNames(loadSavedNames());
+      }
     }
     // mount-only
   }, []);
@@ -86,6 +125,7 @@ export const useVtxPlanner = () => {
       const memory = loadSavedSelection();
       if (memory.length > 0) {
         setSelectedCells(memory);
+        setNames(loadSavedNames());
       } else {
         setSelectedCells(parseSelection(readUrlParams().get("sel")));
       }
@@ -96,13 +136,32 @@ export const useVtxPlanner = () => {
 
   const handleClear = () => {
     setSelectedCells([]);
+    setNames({});
     clearSavedSelection();
+    clearSavedNames();
+  };
+
+  const handleEdit = () => {
+    saveSelection(selectedCells);
+    saveNames(names);
+    setNoedit(false);
+  };
+
+  const handleNew = () => {
+    setSelectedCells([]);
+    setNames({});
+    setMultiSelect(false);
+    clearSavedSelection();
+    clearSavedNames();
+    setThresholds({ hard: DEFAULT_HARD_MHZ, mild: DEFAULT_MILD_MHZ });
+    setNoedit(false);
   };
 
   useEffect(() => {
+    if (noedit) return;
     saveThreshold(HARD_STORAGE_KEY, thresholds.hard);
     saveThreshold(MILD_STORAGE_KEY, thresholds.mild);
-  }, [thresholds]);
+  }, [thresholds, noedit]);
 
   const handleHardChange = (val: number) => {
     setThresholds((prev) => {
@@ -128,21 +187,35 @@ export const useVtxPlanner = () => {
     const result = suggestChannels(n, mildMhz);
     if (result) {
       setSelectedCells(result);
+      const fresh: Record<string, string> = {};
+      result.forEach((cell, i) => {
+        fresh[cellToCode(cell)] = `Pilot ${i + 1}`;
+      });
+      setNames(fresh);
       setMultiSelect(true);
     }
   };
 
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const shareUrl = () => {
+    const params = readUrlParams();
+    params.set("noedit", "1");
+    const qs = params.toString();
+    return `${window.location.origin}${window.location.pathname}${qs ? `?${qs}` : ""}${window.location.hash}`;
+  };
+
   const handleCopyLink = () => {
-    copyToClipboard(window.location.href);
+    copyToClipboard(shareUrl());
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
   };
 
   const dispatch = useDispatch();
   const handleShowQr = () => {
-    dispatch(openModal({ ModalQr: { url: window.location.href } }));
+    dispatch(openModal({ ModalQr: { url: shareUrl() } }));
   };
 
   const counts = { hard: 0, mild: 0 };
@@ -162,6 +235,18 @@ export const useVtxPlanner = () => {
   const selectedLabels = selectedCells.map(
     (cell) => `${VTX_BANDS[cell.band].name}${cell.channel + 1} (${freqOf(cell)} MHz)`,
   );
+
+  const pilots = [...selectedCells]
+    .sort((a, b) => {
+      const nameA = VTX_BANDS[a.band].name;
+      const nameB = VTX_BANDS[b.band].name;
+      if (nameA !== nameB) return nameA < nameB ? -1 : 1;
+      return a.channel - b.channel;
+    })
+    .map((cell) => {
+      const code = cellToCode(cell);
+      return { code, freq: freqOf(cell), name: names[code] ?? "" };
+    });
 
   return {
     tab,
@@ -187,6 +272,14 @@ export const useVtxPlanner = () => {
     counts,
     conflictingSelectedCount,
     selectedLabels,
+    names,
+    noedit,
+    handleRename,
+    handleEdit,
+    handleNew,
+    expanded,
+    setExpanded,
+    pilots,
   };
 };
 

@@ -37,6 +37,57 @@ function loadEnv() {
 const overrideWebpack = (config) => {
   const tsPaths = configPaths('./tsconfig.paths.json');
 
+  // Production only: inject the precache manifest into the service worker.
+  // InjectManifest (not GenerateSW) so navigations use network-first and
+  // index.html can never be served stale; hashed assets stay cache-first.
+  if (process.env.NODE_ENV === 'production') {
+    const { GenerateSW } = require('workbox-webpack-plugin');
+
+    config.plugins.push(
+      new GenerateSW({
+        swDest: 'service-worker.js',
+        // Hashed build assets are immutable by name, so precache (cache-first)
+        // is safe for them. index.html never changes URL, so it must NOT be
+        // precached or users get pinned to a stale app; it is handled by the
+        // network-first navigation route below instead.
+        exclude: [
+          /\.map$/,
+          /asset-manifest\.json$/,
+          /^index\.html$/,
+          /^robots\.txt$/,
+          /^sitemap\.xml$/,
+        ],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
+        navigateFallback: null,
+        runtimeCaching: [
+          {
+            // Fresh app shell when online; last cached shell when offline.
+            urlPattern: ({ request }) => request.mode === "navigate",
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "html-cache",
+              networkTimeoutSeconds: 3,
+              expiration: { maxEntries: 10 },
+            },
+          },
+          {
+            // i18next loads locale JSON at runtime; cache so it works offline.
+            urlPattern: /\/locales\/.*\.json$/,
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "locales-cache",
+              expiration: { maxEntries: 50 },
+            },
+          },
+        ],
+      }),
+    );
+  }
+
+
   // Inject env vars without REACT_APP_ prefix.
   const CRA_NATIVE = new Set(['PUBLIC_URL']);
   const envVars = loadEnv();
