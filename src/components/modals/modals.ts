@@ -1,10 +1,12 @@
 import * as ModalExample from './example';
+import * as ModalQr from './qr';
 
-export const modals = [ModalExample];
+export const modals = [ModalExample, ModalQr];
 
 export namespace NModals {
   export interface IDefaultProps {
     open?: string | boolean | null;
+    zIndex?: number;
   }
 
   export type IModalRegistry = {

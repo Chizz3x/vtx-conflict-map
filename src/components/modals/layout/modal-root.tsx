@@ -5,10 +5,11 @@ interface ModalRootProps {
   onClose?: () => void;
   children?: React.ReactNode;
   style?: React.CSSProperties;
+  zIndex?: number;
 }
 
 const ModalRoot = (props: ModalRootProps) => {
-  const { children, onClose, style } = props;
+  const { children, onClose, style, zIndex } = props;
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     if (event.currentTarget === event.target) {
@@ -17,7 +18,7 @@ const ModalRoot = (props: ModalRootProps) => {
   };
 
   return (
-    <ModalRootStyle style={style} onClick={handleClick}>
+    <ModalRootStyle style={{ zIndex, ...style }} onClick={handleClick}>
       <div className="modal-inner">{children}</div>
     </ModalRootStyle>
   );
@@ -26,7 +27,7 @@ const ModalRoot = (props: ModalRootProps) => {
 export { ModalRoot };
 
 const ModalRootStyle = styled.div`
-  position: absolute;
+  position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
@@ -38,12 +39,14 @@ const ModalRootStyle = styled.div`
   backdrop-filter: blur(5px);
 
   .modal-inner {
-    background: #1a1a2e;
-    border-radius: 8px;
+    background: ${({ theme }) => theme.palette.surface};
+    color: ${({ theme }) => theme.palette.text.primary};
+    border-radius: ${({ theme }) => theme.radius.md};
     display: flex;
     flex-direction: column;
     min-width: 320px;
     max-width: 90vw;
     max-height: 90vh;
+    overflow: auto;
   }
 `;

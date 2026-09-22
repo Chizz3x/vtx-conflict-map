@@ -24,10 +24,10 @@ const MatrixTab = ({ planner }: Props) => {
     pilotCount,
     setPilotCount,
     handleSuggest,
-    suggestMsg,
     showAdvanced,
     setShowAdvanced,
     handleCopyLink,
+    handleShowQr,
     copied,
     counts,
     conflictingSelectedCount,
@@ -74,9 +74,9 @@ const MatrixTab = ({ planner }: Props) => {
           pilotCount={pilotCount}
           onPilotCountChange={setPilotCount}
           onSuggest={handleSuggest}
-          suggestMsg={suggestMsg}
           onClear={handleClear}
           onCopy={handleCopyLink}
+          onShowQr={handleShowQr}
           copied={copied}
         />
       )}

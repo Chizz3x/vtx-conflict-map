@@ -10,9 +10,9 @@ type Props = {
   pilotCount: number;
   onPilotCountChange: (value: number) => void;
   onSuggest: () => void;
-  suggestMsg: string | null;
   onClear: () => void;
   onCopy: () => void;
+  onShowQr: () => void;
   copied: boolean;
 };
 
@@ -25,9 +25,9 @@ const AdvancedPanel = ({
   pilotCount,
   onPilotCountChange,
   onSuggest,
-  suggestMsg,
   onClear,
   onCopy,
+  onShowQr,
   copied,
 }: Props) => {
   return (
@@ -82,7 +82,6 @@ const AdvancedPanel = ({
         <button type="button" className="action-button" onClick={onSuggest}>
           Suggest plan
         </button>
-        {suggestMsg && <span className="suggest-msg">{suggestMsg}</span>}
       </div>
 
       <div className="advanced-actions">
@@ -91,6 +90,9 @@ const AdvancedPanel = ({
         </button>
         <button type="button" className="action-button" onClick={onCopy}>
           {copied ? "Copied!" : "Copy link"}
+        </button>
+        <button type="button" className="action-button" onClick={onShowQr}>
+          Gen QR
         </button>
       </div>
     </AdvancedPanelStyle>
@@ -173,11 +175,6 @@ const AdvancedPanelStyle = styled.div`
       border-color: ${({ theme }) => theme.palette.primary};
       color: ${({ theme }) => theme.palette.primary};
     }
-  }
-
-  .suggest-msg {
-    font-size: 13px;
-    color: ${({ theme }) => theme.palette.text.secondary};
   }
 
   .advanced-actions {

@@ -6,7 +6,6 @@ import {
   Conflict,
   DEFAULT_HARD_MHZ,
   DEFAULT_MILD_MHZ,
-  cellToCode,
   conflictWithOtherSelections,
   conflictWithSelections,
   freqOf,
@@ -34,6 +33,8 @@ import {
   useUrlState,
 } from "./urlState";
 import { copyToClipboard } from "@utils/copy-to-clipboard";
+import { useDispatch } from "@redux/hooks";
+import { openModal } from "@redux/slices/modals";
 
 export const useVtxPlanner = () => {
   const [tab, setTab] = useUrlState<TabKey>("tab", parseTab, serializeTab);
@@ -122,19 +123,13 @@ export const useVtxPlanner = () => {
   };
 
   const [pilotCount, setPilotCount] = useState(4);
-  const [suggestMsg, setSuggestMsg] = useState<string | null>(null);
   const handleSuggest = () => {
     const n = Math.max(1, Math.min(12, pilotCount));
     const result = suggestChannels(n, mildMhz);
     if (result) {
       setSelectedCells(result);
       setMultiSelect(true);
-      const codes = result.map(cellToCode).join(", ");
-      setSuggestMsg(`Suggested ${codes}`);
-    } else {
-      setSuggestMsg(`Couldn't find ${n} mutually compatible channels with these thresholds`);
     }
-    window.setTimeout(() => setSuggestMsg(null), 4000);
   };
 
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -143,6 +138,11 @@ export const useVtxPlanner = () => {
     copyToClipboard(window.location.href);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
+  };
+
+  const dispatch = useDispatch();
+  const handleShowQr = () => {
+    dispatch(openModal({ ModalQr: { url: window.location.href } }));
   };
 
   const counts = { hard: 0, mild: 0 };
@@ -179,10 +179,10 @@ export const useVtxPlanner = () => {
     pilotCount,
     setPilotCount,
     handleSuggest,
-    suggestMsg,
     showAdvanced,
     setShowAdvanced,
     handleCopyLink,
+    handleShowQr,
     copied,
     counts,
     conflictingSelectedCount,
