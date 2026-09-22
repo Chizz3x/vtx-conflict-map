@@ -1,6 +1,10 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "VTX Conflict",
+  "name": "VTX Band Conflict Map",
+  "description": "Find non-conflicting 5.8 GHz VTX channels for flying FPV together.",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["utilities", "productivity"],
   "icons": [
     {
       "src": "favicon.ico",
@@ -19,7 +23,9 @@
     }
   ],
   "start_url": ".",
+  "scope": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "orientation": "any",
+  "theme_color": "#1565c0",
+  "background_color": "#f5f5f5"
 }
